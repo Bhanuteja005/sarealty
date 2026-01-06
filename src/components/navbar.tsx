@@ -2,26 +2,18 @@
 
 import { Button } from "@/components/ui/button";
 import { NAV_LINKS } from "@/constants";
-import { useClickOutside } from "@/hooks";
 import { cn } from "@/lib";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { RefObject, useRef, useState } from "react";
+import { useState } from "react";
 import AnimationContainer from "./global/animation-container";
 import Icons from "./global/icons";
 import Wrapper from "./global/wrapper";
 
 const Navbar = () => {
 
-    const ref = useRef<HTMLDivElement | null>(null);
-    const [open, setOpen] = useState(false);
     const [visible, setVisible] = useState<boolean>(false);
-
-    const mobileMenuRef = useClickOutside(() => {
-        if (open) setOpen(false);
-    });
 
     const { scrollY } = useScroll({
         offset: ["start start", "end start"],
@@ -101,14 +93,10 @@ const Navbar = () => {
                 </Wrapper>
             </motion.div>
 
-            {/* Mobile */}
+            {/* Mobile - show links directly (no hamburger) */}
             <motion.div
                 animate={{
                     y: visible ? 20 : 0,
-                    borderTopLeftRadius: open ? "0.75rem" : "2rem",
-                    borderTopRightRadius: open ? "0.75rem" : "2rem",
-                    borderBottomLeftRadius: open ? "0" : "2rem",
-                    borderBottomRightRadius: open ? "0" : "2rem",
                 }}
                 transition={{
                     type: "spring",
@@ -116,81 +104,31 @@ const Navbar = () => {
                     damping: 50,
                 }}
                 className={cn(
-                    "flex relative flex-col lg:hidden w-full justify-between items-center mx-auto py-4 z-50",
-                    visible && "bg-neutral-950 w-11/12 border",
-                    open && "border-transparent"
+                    "flex relative flex-row lg:hidden w-full items-center mx-auto py-3 z-50",
+                    visible && "bg-white w-11/12 border rounded-full shadow-md"
                 )}
             >
-                <Wrapper className="flex items-center justify-between lg:px-4">
-                    <div className="flex items-center justify-between gap-x-4 w-full">
-                        <AnimationContainer animation="fadeRight" delay={0.1}>
-                            <Link href="/">
-                                <Icons.icon className="w-max h-6" />
-                            </Link>
-                        </AnimationContainer>
+                <Wrapper className="flex items-center justify-between lg:px-4 w-full">
+                    <div className="flex items-center gap-3">
+                        <Link href="/">
+                            <Image src="/images/logo.png" alt="SA Realty" width={36} height={20} className="object-contain" />
+                        </Link>
+                    </div>
 
-                        <AnimationContainer animation="fadeLeft" delay={0.1}>
-                            <div className="flex items-center justify-center gap-x-4">
-                                <Button size="sm">
-                                    <Link href="/signup" className="flex items-center">
-                                        Get started
-                                    </Link>
-                                </Button>
-                                {open ? (
-                                    <XIcon
-                                        className="text-black dark:text-white"
-                                        onClick={() => setOpen(!open)}
-                                    />
-                                ) : (
-                                    <MenuIcon
-                                        className="text-black dark:text-white"
-                                        onClick={() => setOpen(!open)}
-                                    />
-                                )}
-                            </div>
-                        </AnimationContainer>
+                    <div className="flex-1 flex items-center justify-center gap-4 text-sm text-muted-foreground">
+                        {NAV_LINKS.map((navItem, idx) => (
+                            <Link key={idx} href={navItem.link} className="hover:text-foreground px-2 py-1 rounded-md">
+                                {navItem.name}
+                            </Link>
+                        ))}
+                    </div>
+
+                    <div className="flex items-center">
+                        <Link href="/contact">
+                            <Button size="sm">Contact Us</Button>
+                        </Link>
                     </div>
                 </Wrapper>
-
-                <AnimatePresence>
-                    {open && (
-                        <motion.div
-                            ref={mobileMenuRef}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="flex rounded-b-xl absolute top-16 bg-neutral-950 inset-x-0 z-50 flex-col items-start justify-start gap-2 w-full px-4 py-8 shadow-xl shadow-neutral-950"
-                        >
-                            {NAV_LINKS.map((navItem: any, idx: number) => (
-                                <AnimationContainer
-                                    key={`link=${idx}`}
-                                    animation="fadeRight"
-                                    delay={0.1 * (idx + 1)}
-                                    className="w-full"
-                                >
-                                    <Link
-                                        href={navItem.link}
-                                        onClick={() => setOpen(false)}
-                                        className="relative text-neutral-300 hover:bg-neutral-800 w-full px-4 py-2 rounded-lg"
-                                    >
-                                        <motion.span>{navItem.name}</motion.span>
-                                    </Link>
-                                </AnimationContainer>
-                            ))}
-                            <AnimationContainer animation="fadeUp" delay={0.5} className="w-full">
-                                <Link href="/contact" className="w-full">
-                                    <Button
-                                        onClick={() => setOpen(false)}
-                                        variant="default"
-                                        className="block md:hidden w-full"
-                                    >
-                                        Contact Us
-                                    </Button>
-                                </Link>
-                            </AnimationContainer>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
             </motion.div>
         </header>
     );
