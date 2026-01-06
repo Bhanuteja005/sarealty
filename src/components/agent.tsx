@@ -12,7 +12,7 @@ const Agent = () => {
                 <AnimationContainer animation="fadeRight" delay={0.2}>
                     <div className="w-full flex items-center justify-center">
                         <div className="relative w-72 h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden shadow-2xl border border-border bg-card">
-                            <Image src="/images/dp.jpg" alt="Sajitha" fill className="object-cover" />
+                            <Image src="/images/dp.png" alt="Sajitha" fill className="object-cover" />
                         </div>
                     </div>
                 </AnimationContainer>

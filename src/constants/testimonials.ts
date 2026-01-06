@@ -8,7 +8,7 @@ export const TESTIMONIALS = [
         author: "MICHAEL CHEN",
     },
     {
-        content: "SA Realty is an exceptional realtor. They worked with us for over a year during the pandemic to find our new home in a very competitive market with limited inventory. They understand what to anticipate when making an offer and use creative solutions to make our offer more attractive.",
+        content: "SA Realty is an exceptional realtor. They worked with us for over a year during the pandemic to find our new home in a competitive market with limited inventory. They understand what to anticipate when making an offer and use creative solutions to make our offer attractive.",
         author: "LINDSAY RODRIGUEZ",
     },
     {
