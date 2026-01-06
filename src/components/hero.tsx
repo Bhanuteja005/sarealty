@@ -1,22 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import AnimationContainer from "./global/animation-container";
-import Images from "./global/images";
 import Wrapper from "./global/wrapper";
 import { Button } from "./ui/button";
-import Marquee from "./ui/marquee";
+import { Search } from 'lucide-react';
 import SectionBadge from "./ui/section-badge";
 
 const Hero = () => {
-
-    const companies = [
-        Images.comp1,
-        Images.comp2,
-        Images.comp3,
-        Images.comp4,
-        Images.comp5,
-        Images.comp6,
-    ];
 
     return (
         <Wrapper className="pt-20 lg:pt-32 relative min-h-[65vh] w-full h-auto flex-1">
@@ -53,18 +43,34 @@ const Hero = () => {
                     <AnimationContainer animation="fadeUp" delay={1}>
                         <div className="flex flex-col items-start gap-4 py-4">
                             <p className="text-sm md:text-base text-muted-foreground">
-                                Trusted by Industry Leaders
+                                Search properties
                             </p>
-                            <div className="w-full relative max-w-[calc(100vw-2rem)] lg:max-w-lg">
-                                <Marquee className="[--duration:40s] select-none [--gap:2rem]">
-                                    {[...Array(10)].map((_, index) => (
-                                        <div key={index} className="flex items-center justify-center text-muted-foreground h-16">
-                                            {companies[index % companies.length]({ className: "w-auto h-5" })}
-                                        </div>
-                                    ))}
-                                </Marquee>
+                            <div className="w-full relative max-w-[calc(100vw-2rem)] lg:max-w-[1000px] h-16 mx-auto group overflow-hidden p-2">
+                                <form action="/search" method="get" className="w-full h-full flex items-center gap-3 min-w-0">
+                                    <input
+                                        name="q"
+                                        aria-label="Search properties"
+                                        placeholder="Search properties, city, or keyword"
+                                        className="flex-[2] min-w-0 bg-white border border-gray-300 rounded-lg px-4 h-10 md:h-12 text-sm"
+                                    />
+
+                                    <input
+                                        name="location"
+                                        aria-label="Location"
+                                        placeholder="Location (city or ZIP)"
+                                        className="flex-1 min-w-0 bg-white border border-gray-300 rounded-lg px-4 h-10 md:h-12 text-sm"
+                                    />
+
+                                    <button
+                                        type="submit"
+                                        className="w-36 h-full inline-flex items-center justify-center bg-orange-500 text-white rounded-lg px-4 text-sm font-medium hover:opacity-95"
+                                    >
+                                        <Search className="w-4 h-4 mr-2" />
+                                        <span>Search</span>
+                                    </button>
+                                </form>
+
                                 <div className="pointer-events-none absolute inset-y-0 -right-1 w-1/3 bg-gradient-to-l from-background to-transparent z-40"></div>
-                                <div className="pointer-events-none absolute inset-y-0 -left-1 w-1/3 bg-gradient-to-r from-background to-transparent z-40"></div>
                             </div>
                         </div>
                     </AnimationContainer>
