@@ -1,20 +1,11 @@
 
 # Sa Realty - Real Estate Management Landing Page
 
-
-<img src="https://github.com/user-attachments/assets/c5463a31-b063-4064-bc4b-0e7e3b4aa73e" alt="Sa Realty Thumbnail">
-
 ## 🔥 Introduction
 
 Sa Realty is a modern real estate management landing page that showcases property listings, agent profiles, and real estate services with an elegant and responsive design.
 
-## 🔗 Live Preview
 
-Check out the live demo of caps.ai here: [Live Preview](https://Sa Realty-app.vercel.app/)
-
-## 🎥 Watch the Preview Video on YouTube
-
-Take a look at YouTube video by watching the demo: [Watch the Video](https://youtu.be/x3Vh1tOs8j0) 
 
 ## 💻 Tech Stack
 
@@ -71,13 +62,3 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 
-
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
-## ☕ Buy Me a Coffee
-
-If you enjoy using this project, consider supporting my work!  
-[Buy Me a Coffee ☕](https://buymeacoffee.com/shreyas29)
