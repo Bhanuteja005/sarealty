@@ -5,6 +5,7 @@ import Icons from './global/icons'
 import Image from 'next/image'
 import { Phone, Mail, MapPin } from 'lucide-react'
 
+import SectionBadge from "./ui/section-badge";
 const CONTACT_CARDS = [
     { icon: Phone, title: 'Call Us', value: '+1 (123) 456-7890' },
     { icon: Mail, title: 'Email', value: 'contact@sarealty.com' },
@@ -26,10 +27,9 @@ const ContactHero = () => {
             <Wrapper className="py-20">
                 <div className="flex flex-col items-center justify-center w-full z-10">
                     <AnimationContainer animation="fadeUp" delay={0.05}>
-                        <div className="flex items-center justify-center gap-x-1 px-3 py-1.5 relative w-max mx-auto rounded-full bg-white before:absolute before:inset-0 before:-z-10 before:rounded-3xl">
-                            <Icons.icon className="size-5" />
-                            <span className="text-sm text-foreground font-medium">Contact Us</span>
-                        </div>
+                        <AnimationContainer animation="fadeUp" delay={0.2}>
+                    <SectionBadge title="Contact Us" />
+                </AnimationContainer>
                     </AnimationContainer>
 
                     <AnimationContainer animation="fadeUp" delay={0.15}>
