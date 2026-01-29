@@ -44,7 +44,7 @@ const HowItWorks = () => {
                                     animation="scaleUp"
                                     delay={0.7 + (index * 0.2)}
                                 >
-                                    <div className="size-10 rounded-full bg-gradient-to-b from-primary to-orange-400 flex items-center justify-center">
+                                    <div className="size-10 rounded-full bg-gradient-to-b from-primary to-fuchsia-400 flex items-center justify-center">
                                         <span className="text-lg font-medium text-white">
                                             {index + 1}
                                         </span>

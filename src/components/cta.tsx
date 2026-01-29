@@ -94,7 +94,7 @@ const CTA = () => {
 
                     <AnimationContainer animation="fadeUp" delay={1}>
                         <Link href="/contact">
-                            <Button size="lg" className="mt-6">
+                            <Button size="lg" className="mt-6 bg-primary hover:bg-primary/90 text-primary-foreground">
                                 Contact Us
                                 <ArrowRightIcon className="size-4 ml-2" />
                             </Button>

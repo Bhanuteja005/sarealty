@@ -47,7 +47,7 @@ const Agent = () => {
                         </AnimationContainer>
 
                         <AnimationContainer animation="fadeUp" delay={0.8}>
-                            <Button size="lg" className="mt-6 shadow-md">Get in Touch</Button>
+                            <Button size="lg" className="mt-6 shadow-md bg-primary hover:bg-primary/90 text-primary-foreground">Get in Touch</Button>
                         </AnimationContainer>
                     </div>
 

@@ -14,7 +14,7 @@ const SectionBadge = ({ title }: Props) => {
                 <div className="w-1.5 h-1.5 rounded-full bg-primary flex items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 </div>
             </div>
-            <span className="text-xs font-medium text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-300">
+            <span className="text-xs font-medium text-transparent bg-clip-text bg-gradient-to-r from-primary to-fuchsia-300">
                 {title}
             </span>
         </div>

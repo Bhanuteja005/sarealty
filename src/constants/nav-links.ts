@@ -5,6 +5,6 @@ export const NAV_LINKS = [
     },
     {
         name: "Properties",
-        link: "/dashboard",
+        link: "/properties",
     },
 ];

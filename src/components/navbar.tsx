@@ -84,7 +84,7 @@ const Navbar = () => {
                     <AnimationContainer animation="fadeLeft" delay={0.1}>
                         <div className="flex items-center gap-x-4">
                             <Link href="/contact">
-                                <Button size="sm">
+                                <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
                                     Contact Us
                                 </Button>
                             </Link>
@@ -125,7 +125,7 @@ const Navbar = () => {
 
                     <div className="flex items-center">
                         <Link href="/contact">
-                            <Button size="sm">Contact Us</Button>
+                            <Button size="sm" className="bg-fuchsia-500 hover:bg-fuchsia-600">Contact Us</Button>
                         </Link>
                     </div>
                 </Wrapper>
