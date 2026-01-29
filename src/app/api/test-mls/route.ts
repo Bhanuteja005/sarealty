@@ -20,7 +20,7 @@ export async function GET(request: Request) {
                 headers: { 'Content-Type': 'text/html' }
             });
         } catch (error) {
-            return NextResponse.json({ error: error.message });
+            return NextResponse.json({ error: error instanceof Error ? error.message : 'Unknown error' });
         }
     }
 
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     } catch (error) {
         return NextResponse.json({
             success: false,
-            error: error.message
+            error: error instanceof Error ? error.message : 'Unknown error'
         });
     }
 }
