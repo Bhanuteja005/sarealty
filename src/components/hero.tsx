@@ -49,10 +49,10 @@ const Hero = () => {
 
                 <AnimationContainer animation="fadeRight" delay={0.4} className="w-full lg:w-[65%] lg:-mr-[40%] relative z-10 transition-all duration-500">
                     <div className="flex flex-col items-start justify-start w-full h-min relative overflow-visible">
-                        <div className="w-full relative aspect-square lg:aspect-auto lg:h-[600px]">
+                        <div className="w-full relative aspect-square lg:aspect-auto lg:h-[700px]">
                             <div className="absolute inset-0">
                                 <Image
-                                    src="/images/hero.jpeg"
+                                    src="/images/hero1.avif"
                                     alt="hero"
                                     fill
                                     className="w-full h-full object-cover lg:object-left rounded-xl lg:rounded-2xl shadow-2xl"
