@@ -1,7 +1,9 @@
 import { getPropertyById, formatPrice, formatNumber, type Property } from "@/lib/mls-api";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Bed, Bath, Ruler, MapPin, Calendar, Phone, Mail, Home, Car, DollarSign, Share, ArrowLeft, Check, Grid, Info, TreeDeciduous, School, FileText, ChevronRight } from "lucide-react";
+import { PropertyDescription } from "@/components/property-description";
+import { ExpandablePanel } from "@/components/expandable-panel";
+import { Bed, Bath, Ruler, MapPin, Calendar, Phone, Mail, Home, Car, DollarSign, Share, ArrowLeft, Check, Grid, Info, TreeDeciduous, School, FileText, ChevronRight, Armchair, Shield, Thermometer, Zap, GraduationCap, BookOpen } from "lucide-react";
 import { FavoriteButton } from "@/components/favorite-button";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
@@ -94,7 +96,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                         
                         {/* LEFT COLUMN (Details) */}
-                        <div className="lg:col-span-8 space-y-10">
+                        <div className="lg:col-span-8 space-y-8">
                             
                             {/* Gallery Preview */}
                             <section>
@@ -106,162 +108,355 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                                 />
                             </section>
 
-                            {/* Key Features Grid */}
+                            {/* Description - "What's special" */}
                             <section className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8">
-                                <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                                    <Grid className="w-5 h-5 text-primary" />
-                                    Property Overview
+                                <h3 className="text-2xl font-bold mb-6 text-slate-900">
+                                    What&apos;s special
                                 </h3>
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-6 gap-x-4">
-                                     <DetailItem label="Property Type" value={property.propertyType} />
-                                     <DetailItem label="Subtype" value={property.propertySubType} />
-                                     <DetailItem label="Year Built" value={property.yearBuilt} />
-                                     <DetailItem label="Stories" value={property.stories} />
-                                     <DetailItem label="Lot Size" value={property.acres ? `${property.acres} Acres` : undefined} />
-                                     <DetailItem label="Living Areas" value={property.livingAreas} />
-                                     <DetailItem label="Dining Areas" value={property.diningAreas} />
-                                     <DetailItem label="Fireplaces" value={property.fireplaces} />
-                                     <DetailItem label="Garage Spaces" value={property.garageSpaces} />
-                                     <DetailItem label="Carport Spaces" value={property.carportSpaces} />
-                                     <DetailItem label="Covered Spaces" value={property.coveredSpaces} />
-                                     <DetailItem label="Garage Size" value={property.garageSize} />
-                                     <DetailItem label="HOA Type" value={property.hoaType} />
-                                     <DetailItem label="HOA" value={property.hoa ? `$${property.hoa}/yr` : undefined} />
-                                     <DetailItem label="Price / SqFt" value={property.pricePerSqft ? `$${property.pricePerSqft}` : undefined} />
-                                     <DetailItem label="Days on Market" value={getDaysOnMarketLabel(property.listingDate)} />
-                                </div>
+                                
+                                {property.features && property.features.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mb-6">
+                                        {property.features.slice(0, 4).map(f => (
+                                            <span key={f} className="inline-flex items-center px-3 py-1.5 rounded bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-wider">
+                                                {f}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <PropertyDescription description={property.description || "No description provided."} />
                             </section>
 
-                            {/* Description */}
-                            <section className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8">
-                                <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                                    <Info className="w-5 h-5 text-primary" />
-                                    About this home
-                                </h3>
-                                <div className="prose prose-slate max-w-none text-muted-foreground leading-relaxed whitespace-pre-line">
-                                    {property.description || "No description provided."}
+                            {/* Location / Map (Moved from Sidebar) */}
+                            <section className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                                <div className="p-8 border-b border-slate-100">
+                                    <h3 className="text-2xl font-bold text-slate-900">Location</h3>
+                                    <p className="text-slate-500 mt-1">{property.address}, {property.city}, {property.state} {property.zipCode}</p>
                                 </div>
-
-                                {property.features && property.features.length > 0 && (
-                                    <div className="mt-8 pt-8 border-t border-slate-100">
-                                        <h4 className="text-sm font-semibold text-slate-900 mb-4 uppercase tracking-wider">Features</h4>
-                                        <div className="flex flex-wrap gap-2">
-                                            {property.features.map(f => (
-                                                <span key={f} className="inline-flex items-center px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-sm font-medium">
-                                                    {f}
-                                                </span>
-                                            ))}
+                                <div className="h-[400px] w-full relative group">
+                                    <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent z-10 pointer-events-none">
+                                        <div className="text-white font-medium flex items-center gap-2">
+                                            <MapPin className="w-4 h-4" /> View Map Location
                                         </div>
                                     </div>
+                                    <PropertyMap 
+                                        address={property.address}
+                                        city={property.city}
+                                        state={property.state}
+                                        zipCode={property.zipCode}
+                                    />
+                                </div>
+                                {(property.directions || property.publicDrivingDirections) && (
+                                     <div className="p-6 bg-slate-50 border-t border-slate-100">
+                                        <h4 className="font-semibold mb-2 text-sm uppercase tracking-wide text-slate-700">Directions</h4>
+                                        <p className="text-sm text-slate-600 leading-relaxed">
+                                            {property.directions || property.publicDrivingDirections}
+                                        </p>
+                                     </div>
                                 )}
                             </section>
 
-                            {/* Interior & Details Accordion/Grid */}
-                            <section className="space-y-6">
-                                <h3 className="text-2xl font-bold text-slate-900">Details & Amenities</h3>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* General Info */}
-                                    <DetailCard title="General Information" icon={FileText}>
-                                        <DetailRow label="Subdivision" value={property.subdivision} />
-                                        <DetailRow label="County" value={property.county} />
-                                        <DetailRow label="Parcel Number" value={property.parcelNumber} />
-                                        <DetailRow label="Tax Lot" value={property.taxLot} />
-                                        <DetailRow label="Tax Block" value={property.taxBlock} />
-                                        <DetailRow label="Tax Legal Desc" value={property.taxLegalDescription} fullWidth />
-                                        <DetailRow label="Multi Parcel ID" value={property.multiParcelIdYn} />
-                                        <DetailRow label="MUD District" value={property.municipalUtilityDistrictYn} />
-                                        <DetailRow label="Accessibility Features" value={property.accessibilityFeaturesYn} />
-                                    </DetailCard>
+                            {/* Mobile Only: Agent/Contact Card (After Location) */}
+                            <div className="lg:hidden">
+                                <div className="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+                                    <div className="p-6 bg-gradient-to-br from-primary/5 to-transparent">
+                                        <div className="flex items-center gap-4 mb-6">
+                                            <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary text-2xl font-bold shrink-0">
+                                                {property.agentName.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <div className="text-sm text-muted-foreground uppercase tracking-wider font-semibold">Listing Agent</div>
+                                                <div className="text-lg font-bold text-slate-900">{property.agentName}</div>
+                                                <div className="text-sm text-slate-500">{property.agentCompany}</div>
+                                            </div>
+                                        </div>
 
-                                    {/* Lease / Financial */}
-                                    <DetailCard title="Financial & Lease" icon={DollarSign}>
-                                        <DetailRow label="Original List Price" value={property.originalListPrice ? formatPrice(property.originalListPrice) : undefined} />
-                                        <DetailRow label="For Sale" value={property.forSale} />
-                                        <DetailRow label="Available Date" value={property.availableDate} />
-                                        <DetailRow label="Deposit Amount" value={property.depositAmount ? formatPrice(property.depositAmount) : undefined} />
-                                        <DetailRow label="Application Fee" value={property.applicationFee ? formatPrice(property.applicationFee) : undefined} />
-                                        <DetailRow label="Pet Deposit" value={property.petDeposit ? formatPrice(property.petDeposit) : undefined} />
-                                        <DetailRow label="Monthly Pet Fee" value={property.monthlyPetFee ? formatPrice(property.monthlyPetFee) : undefined} />
-                                        <DetailRow label="# Pets Allowed" value={property.petsAllowed?.toString()} />
-                                        <DetailRow label="Non-Refundable Pet Fee" value={property.nonRefundablePetFeeYn} />
-                                        <DetailRow label="# Vehicles" value={property.numVehicles?.toString()} />
-                                        <DetailRow label="# Days Guests Allowed" value={property.daysGuestsAllowed?.toString()} />
-                                        <DetailRow label="Furnished" value={property.furnishedYn} />
-                                        <DetailRow label="Appliances Included" value={property.appliancesYn} />
-                                        <DetailRow label="Monies Required" value={property.moniesRequired} fullWidth />
-                                        <DetailRow label="Tenant Pays" value={property.tenantPays?.join(', ')} fullWidth />
-                                    </DetailCard>
+                                        <div className="space-y-3 mb-6">
+                                            {property.agentPhone && (
+                                                <a href={`tel:${property.agentPhone}`} className="flex items-center justify-center w-full gap-2 bg-white border border-slate-200 hover:border-primary text-slate-700 hover:text-primary py-3 rounded-xl font-medium transition shadow-sm">
+                                                    <Phone className="w-4 h-4" />
+                                                    {property.agentPhone}
+                                                </a>
+                                            )}
+                                        </div>
 
-                                    {/* Green / Energy */}
-                                    {(property.greenType || property.greenStatus) && (
-                                        <DetailCard title="Green Energy" icon={TreeDeciduous}>
-                                            <DetailRow label="Green Features" value={property.greenType} />
-                                            <DetailRow label="Certification" value={property.greenStatus} />
-                                        </DetailCard>
-                                    )}
-
-                                    {/* Interior / Utilities */}
-                                    <DetailCard title="Interior & Utilities" icon={Home}>
-                                         <DetailRow label="Heating" value={property.heating} />
-                                         <DetailRow label="Cooling" value={property.cooling} />
-                                         <DetailRow label="Flooring" value={property.flooring} />
-                                         <DetailRow label="Fireplace Features" value={property.fireplaceFeatures} />
-                                         <DetailRow label="Architectural Style" value={property.architecturalStyle} />
-                                         <DetailRow label="Housing Type" value={property.housingType} />
-                                         <DetailRow label="Security Features" value={property.securityFeatures?.join(', ')} fullWidth />
-                                         <DetailRow label="Other Equipment" value={property.otherEquipment?.join(', ')} fullWidth />
-                                         <DetailRow label="Accessibility Features" value={property.accessibilityFeatures?.join(', ')} fullWidth />
-                                    </DetailCard>
-
-                                    {/* Exterior Features */}
-                                    <DetailCard title="Exterior & Construction" icon={Car}>
-                                        <DetailRow label="Construction" value={property.constructionMaterials?.join(', ')} fullWidth />
-                                        <DetailRow label="Exterior" value={property.exteriorFeatures?.join(', ')} fullWidth />
-                                        <DetailRow label="Fencing" value={property.fencing?.join(', ')} />
-                                        <DetailRow label="Pool Features" value={property.poolFeatures?.join(', ')} />
-                                        <DetailRow label="Parking Features" value={property.parkingFeatures?.join(', ')} fullWidth />
-                                        <DetailRow label="Waterfront" value={property.waterfrontYn} />
-                                        <DetailRow label="Lake Pump" value={property.lakePumpYn} />
-                                    </DetailCard>
+                                        <Link href="/contact" className="w-full">
+                                            <Button className="w-full h-12 text-lg shadow-lg shadow-primary/20 rounded-xl" size="lg">
+                                                Request a Private Tour
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                    <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 text-center">
+                                        <p className="text-xs text-muted-foreground">
+                                            Interested in this property? Contact us today to schedule a viewing.
+                                        </p>
+                                    </div>
                                 </div>
+                            </div>
+
+                            {/* Facts & features */}
+                            <section className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8">
+                                <h3 className="text-2xl font-bold text-slate-900 mb-8 border-b border-slate-100 pb-4">Facts & features</h3>
+                                
+                                <ExpandablePanel initialHeight={600} label="Show more">
+                                    <div className="space-y-10">
+                                    
+                                    {/* Interior */}
+                                    <div>
+                                        <h4 className="text-lg font-bold text-primary mb-6 flex items-center gap-2 pb-2 border-b border-slate-50">
+                                            Interior
+                                        </h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                                            <DetailBox title="Bedrooms & bathrooms">
+                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                    <li>Bedrooms: {property.beds}</li>
+                                                    <li>Bathrooms: {property.baths}</li>
+                                                    {property.stories && <li>Stories: {property.stories}</li>}
+                                                </ul>
+                                            </DetailBox>
+
+                                            <DetailBox title="Heating & Cooling">
+                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                    <li>Heating: {property.heating || "Contact Agent"}</li>
+                                                    <li>Cooling: {property.cooling || "Contact Agent"}</li>
+                                                    {property.fireplaceFeatures && <li>Fireplace: {property.fireplaceFeatures}</li>}
+                                                    {property.fireplaces && <li>Desc: {property.fireplaces}</li>}
+                                                </ul>
+                                            </DetailBox>
+
+                                            <DetailBox title="Interior Features">
+                                                 <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                    {property.flooring && <li>Flooring: {property.flooring}</li>}
+                                                    {property.furnishedYn === 'Yes' && <li>Furnished</li>}
+                                                    {property.appliancesYn === 'Yes' && <li>Appliances Included</li>}
+                                                    {property.features && property.features.slice(4).map(f => (
+                                                        <li key={f}>{f}</li>
+                                                    ))}
+                                                 </ul>
+                                            </DetailBox>
+
+                                            <DetailBox title="Rooms">
+                                                 <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                    {property.livingAreas && <li>Living Areas: {property.livingAreas}</li>}
+                                                    {property.diningAreas && <li>Dining Areas: {property.diningAreas}</li>}
+                                                 </ul>
+                                            </DetailBox>
+                                        </div>
+
+                                        {property.rooms && property.rooms.length > 0 && (
+                                            <div className="mt-8">
+                                                <h5 className="font-semibold text-slate-900 mb-3">Room Dimensions</h5>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                                    {property.rooms.map((room, i) => (
+                                                        <div key={i} className="text-sm">
+                                                            <span className="font-medium text-slate-900">{room.type}:</span> <span className="text-slate-600">{room.dimensions}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Exterior */}
+                                    <div>
+                                        <h4 className="text-lg font-bold text-primary mb-6 flex items-center gap-2 pb-2 border-b border-slate-50">
+                                            Exterior
+                                        </h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                                            <DetailBox title="Property">
+                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                    <li>Type: {property.propertyType}</li>
+                                                    <li>Subtype: {property.propertySubType}</li>
+                                                    <li>Year Built: {property.yearBuilt}</li>
+                                                    {property.architecturalStyle && <li>Style: {property.architecturalStyle}</li>}
+                                                    {property.waterfrontYn === 'Yes' && <li>Waterfront Property</li>}
+                                                </ul>
+                                            </DetailBox>
+
+                                            <DetailBox title="Lot & Construction">
+                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                    {property.acres && <li>Lot Size: {property.acres} Acres</li>}
+                                                    {property.constructionMaterials && <li>Construction: {property.constructionMaterials.join(', ')}</li>}
+                                                    {property.foundationDetails && <li>Foundation: {property.foundationDetails}</li>}
+                                                    {property.roof && <li>Roof: {property.roof}</li>}
+                                                </ul>
+                                            </DetailBox>
+
+                                            <DetailBox title="Parking">
+                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                    {property.garageSpaces && <li>Garage Spaces: {property.garageSpaces}</li>}
+                                                    {property.carportSpaces && <li>Carport Spaces: {property.carportSpaces}</li>}
+                                                    {property.coveredSpaces && <li>Covered Spaces: {property.coveredSpaces}</li>}
+                                                    {property.garageSize && <li>Garage Size: {property.garageSize}</li>}
+                                                    {property.parkingFeatures && property.parkingFeatures.map(f => (
+                                                        <li key={f}>{f}</li>
+                                                    ))}
+                                                </ul>
+                                            </DetailBox>
+                                            
+                                            <DetailBox title="Exterior Features">
+                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                    {property.exteriorFeatures && property.exteriorFeatures.map(f => (
+                                                        <li key={f}>{f}</li>
+                                                    ))}
+                                                    {property.poolFeatures && property.poolFeatures.map(f => (
+                                                        <li key={f}>{f}</li>
+                                                    ))}
+                                                    {property.fencing && property.fencing.map(f => (
+                                                        <li key={f}>{f}</li>
+                                                    ))}
+                                                </ul>
+                                            </DetailBox>
+                                        </div>
+                                    </div>
+
+                                    {/* Financial & Lease */}
+                                    <div>
+                                        <h4 className="text-lg font-bold text-primary mb-6 flex items-center gap-2 pb-2 border-b border-slate-50">
+                                            Financial & Lease
+                                        </h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                                            <DetailBox title="Financial">
+                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                    <li>Days on Market: {getDaysOnMarketLabel(property.listingDate)}</li>
+                                                    <li>For Sale: {property.forSale}</li>
+                                                    {property.originalListPrice && <li>Original Price: {formatPrice(property.originalListPrice)}</li>}
+                                                    {property.pricePerSqft && <li>Price/SqFt: ${property.pricePerSqft}</li>}
+                                                    {property.hoa && <li>HOA: ${property.hoa}/yr</li>}
+                                                    {property.hoaType && <li>HOA Type: {property.hoaType}</li>}
+                                                </ul>
+                                            </DetailBox>
+
+                                            <DetailBox title="Lease Details">
+                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                     <li>Available: {property.availableDate || "Contact Agent"}</li>
+                                                     {property.depositAmount && <li>Deposit: {formatPrice(property.depositAmount)}</li>}
+                                                     {property.applicationFee && <li>App Fee: {formatPrice(property.applicationFee)}</li>}
+                                                     {property.tenantPays && <li>Tenant Pays: {property.tenantPays.join(', ')}</li>}
+                                                     {property.moniesRequired && <li>Monies Required: {property.moniesRequired}</li>}
+                                                </ul>
+                                            </DetailBox>
+                                            
+                                            <DetailBox title="Pet Policy">
+                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                     {property.petsAllowed !== undefined && <li>Pets Allowed: {property.petsAllowed}</li>}
+                                                     {property.petDeposit && <li>Pet Deposit: {formatPrice(property.petDeposit)}</li>}
+                                                     {property.monthlyPetFee && <li>Monthly Pet Fee: {formatPrice(property.monthlyPetFee)}</li>}
+                                                     {property.nonRefundablePetFeeYn === 'Yes' && <li>Non-Refundable Pet Fee</li>}
+                                                </ul>
+                                            </DetailBox>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* General Information */}
+                                    <div>
+                                        <h4 className="text-lg font-bold text-primary mb-6 flex items-center gap-2 pb-2 border-b border-slate-50">
+                                            General Information
+                                        </h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                                            <DetailBox title="Location">
+                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                    <li>Subdivision: {property.subdivision}</li>
+                                                    <li>County: {property.county}</li>
+                                                    <li>City: {property.city}</li>
+                                                    <li>Zip: {property.zipCode}</li>
+                                                </ul>
+                                            </DetailBox>
+                                            
+                                            <DetailBox title="Tax & Legal">
+                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                    <li>Parcel Number: {property.parcelNumber}</li>
+                                                    <li>Tax Lot: {property.taxLot}</li>
+                                                    <li>Tax Block: {property.taxBlock}</li>
+                                                    {property.municipalUtilityDistrictYn === 'Yes' && <li>MUD District</li>}
+                                                </ul>
+                                            </DetailBox>
+                                            
+                                            {property.accessibilityFeaturesYn === 'Yes' && (
+                                                <DetailBox title="Accessibility">
+                                                    <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+                                                        <li>Accessible Features Available</li>
+                                                        {property.accessibilityFeatures && property.accessibilityFeatures.map(f => (
+                                                            <li key={f}>{f}</li>
+                                                        ))}
+                                                    </ul>
+                                                </DetailBox>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                </div>
+                                </ExpandablePanel>
                             </section>
 
-                            {/* Rooms */}
-                            {property.rooms && property.rooms.length > 0 && (
-                                <section className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8">
-                                    <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                                        <Grid className="w-5 h-5 text-primary" />
-                                        Room Dimensions
-                                    </h3>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                        {property.rooms.map((room, i) => (
-                                            <div key={i} className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col">
-                                                <span className="font-semibold text-slate-700">{room.type}</span>
-                                                <span className="text-slate-500 text-sm mt-1">{room.dimensions}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </section>
-                            )}
-                            
                             {/* Schools */}
                             {property.schools && (
                                 <section className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8">
-                                    <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                                        <School className="w-5 h-5 text-primary" />
-                                        Schools & Education
+                                    <h3 className="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-2">
+                                        Schools
                                     </h3>
-                                    <div className="space-y-4">
-                                        {Object.entries(property.schools).map(([key, value]) => {
-                                            if (!value) return null;
-                                            return (
-                                                <div key={key} className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-slate-100 last:border-0">
-                                                    <span className="capitalize text-muted-foreground mr-4">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                                                    <span className="font-medium text-slate-900">{value}</span>
+                                    
+                                    <h4 className="text-lg font-bold text-slate-900 mb-6">Schools provided by the listing agent</h4>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                        {/* Left Side: School List */}
+                                        <div className="md:col-span-2 space-y-6">
+                                            {Object.entries(property.schools).map(([key, value]) => {
+                                                if (!value || key === 'district') return null;
+                                                
+                                                const levelLabel = key.replace(/([A-Z])/g, ' $1').trim();
+                                                let Icon = School;
+                                                if (key.includes('High')) Icon = GraduationCap;
+                                                if (key.includes('Elementary')) Icon = BookOpen;
+                                                
+                                                return (
+                                                    <div key={key} className="flex items-start gap-4 pb-6 border-b border-slate-100 last:border-0 last:pb-0">
+                                                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-white bg-primary shadow-lg shadow-primary/30 shrink-0 ring-4 ring-primary/10">
+                                                            <Icon className="w-6 h-6" />
+                                                        </div>
+                                                        <div>
+                                                            <h5 className="font-bold text-lg text-slate-900 hover:text-primary transition-colors cursor-pointer">
+                                                                {value}
+                                                            </h5>
+                                                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-sm text-slate-500 mt-1 font-medium">
+                                                                <span className="text-primary">{levelLabel}</span>
+                                                                <span className="hidden sm:inline w-1 h-1 rounded-full bg-slate-300"></span>
+                                                                <span>Grades: contact agent</span>
+                                                                <span className="hidden sm:inline w-1 h-1 rounded-full bg-slate-300"></span>
+                                                                <span>Distance: contact agent</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+
+                                        {/* Right Side: Disclaimer & District */}
+                                        <div className="md:col-span-1">
+                                            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 h-full flex flex-col justify-between">
+                                                <div>
+                                                    <h5 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                                        <Info className="w-4 h-4 text-primary" />
+                                                        School Information
+                                                    </h5>
+                                                    
+                                                    {property.schools.district && (
+                                                        <div className="mb-6">
+                                                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                                                                School District
+                                                            </span>
+                                                            <span className="font-semibold text-slate-900 text-lg">
+                                                                {property.schools.district}
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            );
-                                        })}
+
+                                                <p className="text-xs text-slate-500 leading-relaxed border-t border-slate-200 pt-4">
+                                                    School data provided by the listing agent/MLS. We recommend contacting the local school district to confirm school assignments for this home.
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </section>
                             )}
@@ -269,7 +464,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                         </div>
 
                         {/* RIGHT COLUMN (Sticky Sidebar) */}
-                        <div className="lg:col-span-4 space-y-8">
+                        <div className="lg:col-span-4 space-y-8 hidden lg:block">
                             <div className="sticky top-24 space-y-6">
                                 {/* Agent / Contact Card */}
                                 <div className="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden transform transition hover:-translate-y-1 duration-300">
@@ -306,31 +501,6 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                                         </p>
                                     </div>
                                 </div>
-
-                                {/* Map Widget */}
-                                <div className="rounded-3xl overflow-hidden shadow-md border border-slate-200 h-64 relative group">
-                                    <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent z-10 pointer-events-none">
-                                        <div className="text-white font-medium flex items-center gap-2">
-                                            <MapPin className="w-4 h-4" /> View Map Location
-                                        </div>
-                                    </div>
-                                    <PropertyMap 
-                                        address={property.address}
-                                        city={property.city}
-                                        state={property.state}
-                                        zipCode={property.zipCode}
-                                    />
-                                </div>
-
-                                {/* Directions Preview */}
-                                {(property.directions || property.publicDrivingDirections) && (
-                                     <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6">
-                                        <h3 className="font-semibold mb-3">Location & Directions</h3>
-                                        <p className="text-sm text-muted-foreground line-clamp-4">
-                                            {property.directions || property.publicDrivingDirections}
-                                        </p>
-                                     </div>
-                                )}
                             </div>
                         </div>
                     </div>
@@ -376,6 +546,15 @@ function DetailRow({ label, value, fullWidth = false }: { label: string, value?:
         <div className={cn("flex flex-col py-2 border-b border-slate-50 last:border-0", !fullWidth && "sm:flex-row sm:justify-between sm:items-center")}>
             <span className="text-sm text-muted-foreground mb-1 sm:mb-0">{label}</span>
             <span className={cn("font-medium text-slate-900", fullWidth && "text-sm mt-1")}>{value}</span>
+        </div>
+    );
+}
+
+function DetailBox({ title, children }: { title: string, children: React.ReactNode }) {
+    return (
+        <div className="mb-2">
+            <h5 className="font-semibold text-slate-900 mb-2 text-sm uppercase tracking-wide">{title}</h5>
+            {children}
         </div>
     );
 }

@@ -98,6 +98,8 @@ export interface Property {
     petsAllowed?: number;
     monthlyPetFee?: number;
     furnishedYn?: string;
+    roof?: string;
+    foundationDetails?: string;
     numVehicles?: number;
     daysGuestsAllowed?: number;
     nonRefundablePetFeeYn?: string;
@@ -486,6 +488,8 @@ function parseDetailFieldsFromHtml(detailHtml: string): PartialDeep<Property> {
         architecturalStyle: getField('Architectural Style'),
         heating: getField('Heating'),
         cooling: getField('Cooling'),
+        roof: getField('Roof'),
+        foundationDetails: getField('Foundation Details'),
         constructionMaterials: getList('Construction Materials'),
         exteriorFeatures: getList('Exterior Features'),
         accessibilityFeatures: getList('Accessibility Features'),

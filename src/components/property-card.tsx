@@ -146,11 +146,7 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
                         <span className="text-2xl font-bold text-primary">
                             {formatPrice(property.price)}
                         </span>
-                        {property.pricePerSqft && (
-                            <span className="text-xs text-muted-foreground">
-                                ${property.pricePerSqft}/sqft
-                            </span>
-                        )}
+                        
                     </div>
 
                     <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border/50">
