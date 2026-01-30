@@ -7,6 +7,8 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import PropertyMap from "@/components/property-map";
 import { notFound } from "next/navigation";
+import AgentImage from "@/components/agent-image";
+import { PropertyGallery } from "@/components/property-gallery";
 
 interface PropertyDetailPageProps {
     params: Promise<{
@@ -38,31 +40,12 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                         {/* Main Content */}
                         <div className="lg:col-span-2">
                             {/* Image Gallery */}
-                            <div className="relative h-96 md:h-[500px] bg-muted rounded-2xl overflow-hidden mb-6">
-                                {property.images[0] ? (
-                                    <img
-                                        src={property.images[0]}
-                                        alt={property.address}
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center bg-muted">
-                                        <span className="text-muted-foreground">No Image Available</span>
-                                    </div>
-                                )}
-                                
-                                {property.openHouse && (
-                                    <div className="absolute top-4 left-4 bg-primary text-primary-foreground px-4 py-2 rounded-full flex items-center gap-2 z-10">
-                                        <Calendar className="w-4 h-4" />
-                                        <span className="font-medium">Open: {property.openHouse.date}</span>
-                                    </div>
-                                )}
-                                <div className="absolute top-4 right-4 flex gap-2 z-10 w-auto">
-                                    <FavoriteButton className="bg-white/90 backdrop-blur p-3 rounded-full hover:bg-white transition shadow-sm w-auto h-auto" iconClassName="w-5 h-5" />
-                                    <button className="bg-white/90 backdrop-blur p-3 rounded-full hover:bg-white transition shadow-sm">
-                                        <Share className="w-5 h-5 text-gray-600" />
-                                    </button>
-                                </div>
+                            <div className="mb-8">
+                                <PropertyGallery 
+                                    images={property.images} 
+                                    openHouse={property.openHouse}
+                                    address={property.address}
+                                />
                             </div>
 
                             {/* Property Details */}
@@ -244,8 +227,12 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                                 <div className="bg-card border border-border rounded-xl p-6">
                                     <h3 className="text-lg font-semibold mb-4">Listed by</h3>
                                     <div className="text-center mb-4">
-                                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 mx-auto mb-3 flex items-center justify-center text-primary font-bold text-xl">
-                                            {property.agentName.charAt(0)}
+                                        <div className="w-24 h-24 rounded-full bg-muted mx-auto mb-3 overflow-hidden border-2 border-border">
+                                            <AgentImage 
+                                                src="/images/dp.jpg" 
+                                                alt={property.agentName} 
+                                                fallbackInitial={property.agentName.charAt(0)}
+                                            />
                                         </div>
                                         <div className="font-semibold text-lg">{property.agentName}</div>
                                         <div className="text-sm text-muted-foreground">SA Realty</div>

@@ -182,8 +182,11 @@ async function fetchAllMlsListings(): Promise<Property[]> {
 
     let html = await res.text();
 
+    // Parse image map from scripts
+    const imageMap = parseImageMap(html);
+
     // Parse first page listings
-    const firstPageListings = parseHtmlListings(html);
+    const firstPageListings = parseHtmlListings(html, imageMap);
     allListings.push(...firstPageListings);
     console.log('Page 1:', firstPageListings.length, 'listings');
 
@@ -227,7 +230,9 @@ async function fetchAllMlsListings(): Promise<Property[]> {
                 });
 
                 html = await pageRes.text();
-                const pageListings = parseHtmlListings(html);
+                // Parse image map for this page
+                const validImageMap = parseImageMap(html);
+                const pageListings = parseHtmlListings(html, validImageMap);
                 allListings.push(...pageListings);
                 console.log(`Page ${pageNum}:`, pageListings.length, 'listings');
             } catch (err) {
@@ -245,7 +250,7 @@ async function fetchAllMlsListings(): Promise<Property[]> {
 }
 
 // Parse HTML listings from MLS Matrix response
-function parseHtmlListings(html: string): Property[] {
+function parseHtmlListings(html: string, imageMap: Record<string, string[]> = {}): Property[] {
     const listings: Property[] = [];
 
     // Find all record blocks: <!--@Record:549544577@-->
@@ -259,6 +264,11 @@ function parseHtmlListings(html: string): Property[] {
         try {
             const listing = parseRecordHtml(mlsNumber, recordHtml);
             if (listing && listing.address) {
+                // Add additional images from map if available
+                if (imageMap[mlsNumber] && imageMap[mlsNumber].length > 0) {
+                     // Prefer Size=5 (Large), falling back to what we found
+                     listing.images = imageMap[mlsNumber];
+                }
                 listings.push(listing);
             }
         } catch (err) {
@@ -267,6 +277,56 @@ function parseHtmlListings(html: string): Property[] {
     }
 
     return listings;
+}
+
+function parseImageMap(html: string): Record<string, string[]> {
+    const imageMap: Record<string, string[]> = {};
+    
+    // Pattern to find ImageViewerResponsiveClass calls
+    // ImageViewerResponsiveClass('#m_DisplayCore_dpy1', 23, [], {L:1,tid:9,key:'550298327',...}, {t:...,m:...,l:...}, 0, true, 'true', '550298327', {'0_1':'...'})
+    
+    const scriptPattern = /ImageViewerResponsiveClass\s*\([^,]+,[^,]+,[^,]+,\s*{[^}]*key:'(\d+)'[^}]*}.*?,\s*({'[^']+'\s*:[^}]+})\)/g;
+    let match: RegExpExecArray | null;
+    
+    while ((match = scriptPattern.exec(html)) !== null) {
+        const key = match[1];
+        const jsonStr = match[2];
+        
+        try {
+            // Fix quotes to make it valid JSON (simple approximation)
+            // The string is like {'0_1':'url', '1_1':'url'}
+            // We can just extract URLs directly using regex
+            const urlPattern = /'(\d+)_(\d+)':'([^']+)'/g;
+            let urlMatch;
+            const images: { index: number, size: number, url: string }[] = [];
+            
+            while ((urlMatch = urlPattern.exec(jsonStr)) !== null) {
+                images.push({
+                    index: parseInt(urlMatch[1]),
+                    size: parseInt(urlMatch[2]),
+                    url: urlMatch[3]
+                });
+            }
+            
+            if (images.length > 0) {
+                // Group by size
+                // We want largest size (5)
+                const largeImages = images.filter(img => img.size === 5).sort((a, b) => a.index - b.index);
+                const mediumImages = images.filter(img => img.size === 2).sort((a, b) => a.index - b.index);
+                const smallImages = images.filter(img => img.size === 1).sort((a, b) => a.index - b.index);
+                
+                let bestImages = largeImages;
+                if (bestImages.length === 0) bestImages = mediumImages;
+                if (bestImages.length === 0) bestImages = smallImages;
+                
+                imageMap[key] = bestImages.map(img => img.url);
+            }
+        } catch (e) {
+            console.error('Error parsing image JSON for key', key, e);
+        }
+    }
+    
+    return imageMap;
 }
 
 // Parse a single record block

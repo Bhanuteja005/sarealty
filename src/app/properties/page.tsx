@@ -157,16 +157,16 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                             {properties.map((property) => (
                                 <div
                                     key={property.id}
-                                    className="group bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-shadow relative"
+                                    className="group bg-card border border-border rounded-lg overflow-hidden transition-all hover:-translate-y-1 hover:shadow-xl relative"
                                 >
                                     {/* Image Container */}
-                                    <div className="relative h-48 bg-muted overflow-hidden">
+                                    <div className="relative h-56 bg-muted overflow-hidden">
                                         <Link href={`/properties/${property.id}`} className="block h-full w-full">
                                             {property.images[0] ? (
                                                 <img
                                                     src={property.images[0]}
                                                     alt={property.address}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center bg-muted">
@@ -176,7 +176,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                                         </Link>
                                         
                                         {property.openHouse && (
-                                            <div className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full pointer-events-none">
+                                            <div className="absolute top-3 left-3 bg-primary/95 backdrop-blur-sm text-primary-foreground text-xs font-medium px-3 py-1 rounded-full pointer-events-none shadow-sm">
                                                 Open House
                                             </div>
                                         )}
@@ -186,34 +186,54 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                                     </div>
 
                                     {/* Content */}
-                                    <div className="p-4">
+                                    <div className="p-5">
                                         <Link href={`/properties/${property.id}`} className="block">
-                                            <div className="text-2xl font-semibold mb-2">{formatPrice(property.price)}</div>
-
-                                            <div className="flex items-center gap-4 mb-2 text-sm text-muted-foreground">
-                                                <div className="flex items-center gap-1">
-                                                    <Bed className="w-4 h-4" />
-                                                    <span>{property.beds} beds</span>
-                                                </div>
-                                                <div className="flex items-center gap-1">
-                                                    <Bath className="w-4 h-4" />
-                                                    <span>{property.baths} baths</span>
-                                                </div>
-                                                <div className="flex items-center gap-1">
-                                                    <Ruler className="w-4 h-4" />
-                                                    <span>{formatNumber(property.sqft)} sqft</span>
-                                                </div>
+                                            <div className="mb-4">
+                                                <h3 className="text-lg font-semibold text-foreground truncate leading-tight" title={property.address}>
+                                                    {property.address}
+                                                </h3>
+                                                <p className="text-sm text-muted-foreground truncate mt-1">
+                                                    {property.city ? (
+                                                        <>
+                                                            {property.city}, {property.state} {property.zipCode}
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            {property.state} {property.zipCode}
+                                                        </>
+                                                    )}
+                                                </p>
                                             </div>
 
-                                            <div className="flex items-start gap-1 text-sm mb-2">
-                                                <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground flex-shrink-0" />
-                                                <span className="text-muted-foreground">
-                                                    {property.address}, {property.city}, {property.state} {property.zipCode}
-                                                </span>
+                                            <div className="text-2xl font-bold text-primary mb-4 tracking-tight">
+                                                {formatPrice(property.price)}
                                             </div>
 
-                                            <div className="text-xs text-muted-foreground">
-                                                {property.propertyType} • Listed {property.listingDate}
+                                            <div className="grid grid-cols-3 items-center border-t border-border pt-4 mt-auto">
+                                                <div className="flex items-center justify-start gap-1.5 text-sm text-muted-foreground" title={`${property.beds} Beds`}>
+                                                    {property.beds > 0 && (
+                                                        <>
+                                                            <Bed className="w-4 h-4" />
+                                                            <span>{property.beds}</span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground" title={`${property.baths} Baths`}>
+                                                    {property.baths > 0 && (
+                                                        <>
+                                                            <Bath className="w-4 h-4" />
+                                                            <span>{property.baths}</span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center justify-end gap-1.5 text-sm text-muted-foreground" title={`${formatNumber(property.sqft)} SqFt`}>
+                                                    {property.sqft > 0 && (
+                                                        <>
+                                                            <Ruler className="w-4 h-4" />
+                                                            <span>{formatNumber(property.sqft)}</span>
+                                                        </>
+                                                    )}
+                                                </div>
                                             </div>
                                         </Link>
                                     </div>

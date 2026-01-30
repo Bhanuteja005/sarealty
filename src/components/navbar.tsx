@@ -63,7 +63,7 @@ const Navbar = () => {
                         </Link>
                     </motion.div>
 
-                    <div className="hidden lg:flex flex-row flex-1 absolute inset-0 items-center justify-center w-max mx-auto gap-x-2 text-sm text-muted-foreground font-medium">
+                    <div className="hidden lg:flex flex-row flex-1 absolute inset-0 items-center justify-center w-max mx-auto gap-x-2 text-sm text-black font-medium">
                         <AnimatePresence>
                             {NAV_LINKS.map((link, index) => (
                                 <AnimationContainer
@@ -115,7 +115,7 @@ const Navbar = () => {
                         </Link>
                     </div>
 
-                    <div className="flex-1 flex items-center justify-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex-1 flex items-center justify-center gap-4 text-sm text-black">
                         {NAV_LINKS.map((navItem, idx) => (
                             <Link key={idx} href={navItem.link} className="hover:text-foreground px-2 py-1 rounded-md">
                                 {navItem.name}
@@ -125,7 +125,7 @@ const Navbar = () => {
 
                     <div className="flex items-center">
                         <Link href="/contact">
-                            <Button size="sm" className="bg-fuchsia-500 hover:bg-fuchsia-600">Contact Us</Button>
+                            <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">Contact Us</Button>
                         </Link>
                     </div>
                 </Wrapper>
