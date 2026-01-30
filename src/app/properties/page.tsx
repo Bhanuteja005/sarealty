@@ -5,6 +5,7 @@ import { Filter, Search } from "lucide-react";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { PropertyCard } from "@/components/property-card";
+import { PropertiesFilter } from "@/components/properties-filter";
 
 interface PropertiesPageProps {
     searchParams: Promise<{
@@ -67,91 +68,8 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                     </div>
 
                     {/* Filters - Static, below heading */}
-                    <div className="mb-10 bg-card rounded-2xl shadow-sm border border-border p-6">
-                        <form method="get" className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
-                                <div className="lg:col-span-4 relative">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                                    <input
-                                        name="q"
-                                        defaultValue={sp?.q}
-                                        placeholder="Search by address, description..."
-                                        className="w-full pl-10 h-10 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                                    />
-                                </div>
-                                <div className="lg:col-span-2">
-                                    <input
-                                        name="location"
-                                        defaultValue={sp?.location}
-                                        placeholder="City or ZIP"
-                                        className="w-full h-10 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                                    />
-                                </div>
-                                <div className="lg:col-span-2">
-                                    <select
-                                        name="beds"
-                                        defaultValue={sp?.beds}
-                                        className="w-full h-10 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                                    >
-                                        <option value="">Beds</option>
-                                        <option value="1">1+ Beds</option>
-                                        <option value="2">2+ Beds</option>
-                                        <option value="3">3+ Beds</option>
-                                        <option value="4">4+ Beds</option>
-                                        <option value="5">5+ Beds</option>
-                                    </select>
-                                </div>
-                                <div className="lg:col-span-2">
-                                    <select
-                                        name="baths"
-                                        defaultValue={sp?.baths}
-                                        className="w-full h-10 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                                    >
-                                        <option value="">Baths</option>
-                                        <option value="1">1+ Baths</option>
-                                        <option value="2">2+ Baths</option>
-                                        <option value="3">3+ Baths</option>
-                                        <option value="4">4+ Baths</option>
-                                    </select>
-                                </div>
-                                <div className="lg:col-span-2">
-                                     <Button type="submit" className="w-full h-10 font-medium">
-                                        Search
-                                    </Button>
-                                </div>
-                            </div>
-                            
-                            <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-border/50">
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground mr-auto">
-                                    <Filter className="w-4 h-4" />
-                                    <span>Advanced Filters</span>
-                                </div>
-                                <div className="flex gap-2 w-full sm:w-auto">
-                                    <input
-                                        name="minPrice"
-                                        type="number"
-                                        defaultValue={sp?.minPrice}
-                                        placeholder="Min Price"
-                                        className="w-full sm:w-32 h-9 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                    />
-                                    <span className="self-center text-muted-foreground">-</span>
-                                    <input
-                                        name="maxPrice"
-                                        type="number"
-                                        defaultValue={sp?.maxPrice}
-                                        placeholder="Max Price"
-                                        className="w-full sm:w-32 h-9 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                    />
-                                    {Object.keys(sp || {}).length > 0 && (
-                                        <Link href="/properties">
-                                            <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                                                Clear All
-                                            </Button>
-                                        </Link>
-                                    )}
-                                </div>
-                            </div>
-                        </form>
+                    <div className="mb-10">
+                        <PropertiesFilter />
                     </div>
 
                     {/* Property Grid */}
