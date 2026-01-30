@@ -458,9 +458,9 @@ export function formatPrice(price: number): string {
     if (price >= 1000000) {
         return `$${(price / 1000000).toFixed(2)}M`;
     }
-    return `$${price.toLocaleString()}`;
+    return `$${price.toLocaleString('en-US')}`;
 }
 
 export function formatNumber(num: number): string {
-    return num.toLocaleString();
+    return num.toLocaleString('en-US');
 }

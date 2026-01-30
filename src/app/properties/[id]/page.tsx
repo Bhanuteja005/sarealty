@@ -132,12 +132,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                                             <div className="font-medium">{property.propertySubType}</div>
                                         </div>
                                     )}
-                                    {property.halfBaths && (
-                                        <div className="p-3 bg-secondary/50 rounded-lg">
-                                            <div className="text-sm text-muted-foreground mb-1">Half Baths</div>
-                                            <div className="font-medium">{property.halfBaths}</div>
-                                        </div>
-                                    )}
+                                    
                                 </div>
                             </div>
 

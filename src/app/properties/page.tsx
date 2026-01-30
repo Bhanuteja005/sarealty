@@ -1,10 +1,10 @@
 import { searchProperties, formatPrice, formatNumber, type Property } from "@/lib/mls-api";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Bed, Bath, Ruler, MapPin } from "lucide-react";
-import { FavoriteButton } from "@/components/favorite-button";
+import { Filter, Search } from "lucide-react";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import { PropertyCard } from "@/components/property-card";
 
 interface PropertiesPageProps {
     searchParams: Promise<{
@@ -45,100 +45,110 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
         perPage: 20,
     });
 
-    console.log('Search result:', {
-        total: result.total,
-        totalPages: result.totalPages,
-        itemsCount: result.items.length,
-        page: result.page,
-        perPage: result.perPage
-    });
-
     const properties = result.items;
     const total = result.total;
     const totalPages = result.totalPages;
 
     return (
-        <div className="w-full">
+        <div className="w-full bg-background min-h-screen flex flex-col">
             <Navbar />
 
-            <div className="pt-24 pb-16 bg-background min-h-screen">
-                <div className="max-w-7xl mx-auto px-4">
+            <div className="flex-1 pt-28 pb-20">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header */}
-                    <div className="mb-8">
-                        <h1 className="text-3xl lg:text-4xl font-semibold mb-2">
-                            {sp?.location || sp?.q
-                                ? `Properties in ${sp?.location || sp?.q}`
-                                : 'All Properties'}
+                    <div className="mb-8 text-center max-w-2xl mx-auto">
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+                            Find Your Dream Home
                         </h1>
-                        <p className="text-muted-foreground">
-                            {total} {total === 1 ? 'result' : 'results'} found
+                        <p className="text-muted-foreground text-lg">
+                            {total} {total === 1 ? 'property' : 'properties'} found
+                            {sp?.location ? ` in ${sp.location}` : ''}
                         </p>
                     </div>
 
-                    {/* Filters */}
-                    <div className="mb-8 p-4 bg-card border border-border rounded-lg">
-                        <form method="get" className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <input
-                                    name="q"
-                                    defaultValue={sp?.q}
-                                    placeholder="Search address, city, description..."
-                                    className="bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                                />
-                                <input
-                                    name="location"
-                                    defaultValue={sp?.location}
-                                    placeholder="City or ZIP code"
-                                    className="bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                                />
-                                <select
-                                    name="beds"
-                                    defaultValue={sp?.beds}
-                                    className="bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                                >
-                                    <option value="">Any beds</option>
-                                    <option value="1">1+ beds</option>
-                                    <option value="2">2+ beds</option>
-                                    <option value="3">3+ beds</option>
-                                    <option value="4">4+ beds</option>
-                                    <option value="5">5+ beds</option>
-                                </select>
-                                <select
-                                    name="baths"
-                                    defaultValue={sp?.baths}
-                                    className="bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                                >
-                                    <option value="">Any baths</option>
-                                    <option value="1">1+ baths</option>
-                                    <option value="2">2+ baths</option>
-                                    <option value="3">3+ baths</option>
-                                    <option value="4">4+ baths</option>
-                                </select>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <input
-                                    name="minPrice"
-                                    type="number"
-                                    defaultValue={sp?.minPrice}
-                                    placeholder="Min price"
-                                    className="bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                                />
-                                <input
-                                    name="maxPrice"
-                                    type="number"
-                                    defaultValue={sp?.maxPrice}
-                                    placeholder="Max price"
-                                    className="bg-background border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                                />
-                                <div className="flex gap-2">
-                                    <Button type="submit" className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground">
-                                        Apply Filters
+                    {/* Filters - Static, below heading */}
+                    <div className="mb-10 bg-card rounded-2xl shadow-sm border border-border p-6">
+                        <form method="get" className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
+                                <div className="lg:col-span-4 relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                                    <input
+                                        name="q"
+                                        defaultValue={sp?.q}
+                                        placeholder="Search by address, description..."
+                                        className="w-full pl-10 h-10 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                                    />
+                                </div>
+                                <div className="lg:col-span-2">
+                                    <input
+                                        name="location"
+                                        defaultValue={sp?.location}
+                                        placeholder="City or ZIP"
+                                        className="w-full h-10 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                                    />
+                                </div>
+                                <div className="lg:col-span-2">
+                                    <select
+                                        name="beds"
+                                        defaultValue={sp?.beds}
+                                        className="w-full h-10 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                                    >
+                                        <option value="">Beds</option>
+                                        <option value="1">1+ Beds</option>
+                                        <option value="2">2+ Beds</option>
+                                        <option value="3">3+ Beds</option>
+                                        <option value="4">4+ Beds</option>
+                                        <option value="5">5+ Beds</option>
+                                    </select>
+                                </div>
+                                <div className="lg:col-span-2">
+                                    <select
+                                        name="baths"
+                                        defaultValue={sp?.baths}
+                                        className="w-full h-10 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                                    >
+                                        <option value="">Baths</option>
+                                        <option value="1">1+ Baths</option>
+                                        <option value="2">2+ Baths</option>
+                                        <option value="3">3+ Baths</option>
+                                        <option value="4">4+ Baths</option>
+                                    </select>
+                                </div>
+                                <div className="lg:col-span-2">
+                                     <Button type="submit" className="w-full h-10 font-medium">
+                                        Search
                                     </Button>
-                                    <Link href="/properties">
-                                        <Button type="button" variant="outline">
-                                            Clear
-                                        </Button>
-                                    </Link>
+                                </div>
+                            </div>
+                            
+                            <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-border/50">
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground mr-auto">
+                                    <Filter className="w-4 h-4" />
+                                    <span>Advanced Filters</span>
+                                </div>
+                                <div className="flex gap-2 w-full sm:w-auto">
+                                    <input
+                                        name="minPrice"
+                                        type="number"
+                                        defaultValue={sp?.minPrice}
+                                        placeholder="Min Price"
+                                        className="w-full sm:w-32 h-9 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                    />
+                                    <span className="self-center text-muted-foreground">-</span>
+                                    <input
+                                        name="maxPrice"
+                                        type="number"
+                                        defaultValue={sp?.maxPrice}
+                                        placeholder="Max Price"
+                                        className="w-full sm:w-32 h-9 px-3 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                    />
+                                    {Object.keys(sp || {}).length > 0 && (
+                                        <Link href="/properties">
+                                            <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                                                Clear All
+                                            </Button>
+                                        </Link>
+                                    )}
                                 </div>
                             </div>
                         </form>
@@ -146,123 +156,46 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
 
                     {/* Property Grid */}
                     {properties.length === 0 ? (
-                        <div className="text-center py-16">
-                            <p className="text-lg text-muted-foreground mb-4">No properties found matching your criteria</p>
+                        <div className="text-center py-32 bg-muted/30 rounded-3xl border border-dashed border-border">
+                            <h3 className="text-2xl font-semibold mb-2">No properties found</h3>
+                            <p className="text-muted-foreground mb-6">Try adjusting your filters to find what you're looking for.</p>
                             <Link href="/properties">
-                                <Button variant="outline">Clear Filters</Button>
+                                <Button size="lg" variant="outline">Clear All Filters</Button>
                             </Link>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {properties.map((property) => (
-                                <div
-                                    key={property.id}
-                                    className="group bg-card border border-border rounded-lg overflow-hidden transition-all hover:-translate-y-1 hover:shadow-xl relative"
-                                >
-                                    {/* Image Container */}
-                                    <div className="relative h-56 bg-muted overflow-hidden">
-                                        <Link href={`/properties/${property.id}`} className="block h-full w-full">
-                                            {property.images[0] ? (
-                                                <img
-                                                    src={property.images[0]}
-                                                    alt={property.address}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                                                />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center bg-muted">
-                                                    <span className="text-muted-foreground">No Image</span>
-                                                </div>
-                                            )}
-                                        </Link>
-                                        
-                                        {property.openHouse && (
-                                            <div className="absolute top-3 left-3 bg-primary/95 backdrop-blur-sm text-primary-foreground text-xs font-medium px-3 py-1 rounded-full pointer-events-none shadow-sm">
-                                                Open House
-                                            </div>
-                                        )}
-                                        <div className="absolute top-3 right-3 z-10">
-                                            <FavoriteButton />
-                                        </div>
-                                    </div>
-
-                                    {/* Content */}
-                                    <div className="p-5">
-                                        <Link href={`/properties/${property.id}`} className="block">
-                                            <div className="mb-4">
-                                                <h3 className="text-lg font-semibold text-foreground truncate leading-tight" title={property.address}>
-                                                    {property.address}
-                                                </h3>
-                                                <p className="text-sm text-muted-foreground truncate mt-1">
-                                                    {property.city ? (
-                                                        <>
-                                                            {property.city}, {property.state} {property.zipCode}
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            {property.state} {property.zipCode}
-                                                        </>
-                                                    )}
-                                                </p>
-                                            </div>
-
-                                            <div className="text-2xl font-bold text-primary mb-4 tracking-tight">
-                                                {formatPrice(property.price)}
-                                            </div>
-
-                                            <div className="grid grid-cols-3 items-center border-t border-border pt-4 mt-auto">
-                                                <div className="flex items-center justify-start gap-1.5 text-sm text-muted-foreground" title={`${property.beds} Beds`}>
-                                                    {property.beds > 0 && (
-                                                        <>
-                                                            <Bed className="w-4 h-4" />
-                                                            <span>{property.beds}</span>
-                                                        </>
-                                                    )}
-                                                </div>
-                                                <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground" title={`${property.baths} Baths`}>
-                                                    {property.baths > 0 && (
-                                                        <>
-                                                            <Bath className="w-4 h-4" />
-                                                            <span>{property.baths}</span>
-                                                        </>
-                                                    )}
-                                                </div>
-                                                <div className="flex items-center justify-end gap-1.5 text-sm text-muted-foreground" title={`${formatNumber(property.sqft)} SqFt`}>
-                                                    {property.sqft > 0 && (
-                                                        <>
-                                                            <Ruler className="w-4 h-4" />
-                                                            <span>{formatNumber(property.sqft)}</span>
-                                                        </>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    </div>
-                                </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {properties.map((property, index) => (
+                                <PropertyCard 
+                                    key={property.id} 
+                                    property={property} 
+                                    index={index} 
+                                />
                             ))}
                         </div>
                     )}
 
                     {/* Pagination */}
                     {totalPages > 1 && (
-                        <div className="mt-8 flex items-center justify-center space-x-3">
+                        <div className="mt-16 flex items-center justify-center gap-4">
                             {currentPage > 1 ? (
                                 <Link href={buildHrefWithPage(sp, currentPage - 1)}>
-                                    <Button variant="outline">Previous</Button>
+                                    <Button variant="outline" size="lg" className="w-32">Previous</Button>
                                 </Link>
                             ) : (
-                                <Button variant="outline" disabled>Previous</Button>
+                                <Button variant="outline" size="lg" className="w-32" disabled>Previous</Button>
                             )}
 
-                            <div className="text-sm text-muted-foreground">
-                                Page {currentPage} of {totalPages} • {total} results
-                            </div>
+                            <span className="text-sm font-medium text-muted-foreground">
+                                Page {currentPage} of {totalPages}
+                            </span>
 
                             {currentPage < totalPages ? (
                                 <Link href={buildHrefWithPage(sp, currentPage + 1)}>
-                                    <Button>Next</Button>
+                                    <Button variant="outline" size="lg" className="w-32">Next</Button>
                                 </Link>
                             ) : (
-                                <Button disabled>Next</Button>
+                                <Button variant="outline" size="lg" className="w-32" disabled>Next</Button>
                             )}
                         </div>
                     )}
@@ -273,3 +206,4 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
         </div>
     );
 }
+
