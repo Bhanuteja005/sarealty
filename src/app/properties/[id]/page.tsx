@@ -337,14 +337,6 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                                                 </ul>
                                             </DetailBox>
                                             
-                                            <DetailBox title="Pet Policy">
-                                                <ul className="list-disc list-inside space-y-1.5 text-slate-700">
-                                                     {property.petsAllowed !== undefined && <li>Pets Allowed: {property.petsAllowed}</li>}
-                                                     {property.petDeposit && <li>Pet Deposit: {formatPrice(property.petDeposit)}</li>}
-                                                     {property.monthlyPetFee && <li>Monthly Pet Fee: {formatPrice(property.monthlyPetFee)}</li>}
-                                                     {property.nonRefundablePetFeeYn === 'Yes' && <li>Non-Refundable Pet Fee</li>}
-                                                </ul>
-                                            </DetailBox>
                                         </div>
                                     </div>
                                     
